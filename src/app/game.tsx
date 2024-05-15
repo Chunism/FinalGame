@@ -194,7 +194,7 @@ export default function AlternateTides({ description }: { description: string })
 
     
 
-    Progress the year by 10 years each time a decision is made. This simulates long-term effects and developments, aligning with historical contexts and potential alternative outcomes.
+    Progress the year by 3 years each time a decision is made. This simulates long-term effects and developments, aligning with historical contexts and potential alternative outcomes.
 
     Only output the JSON object with no other text or explanation. JSON OBJECT: {`;
 
@@ -254,7 +254,7 @@ export default function AlternateTides({ description }: { description: string })
               event: JSON.parse(testGemini)?.event,
               actions: updatedGameState.actions || [],
               selectedAction: `${buttonText}-${analysisText}`,
-              year: prevState.year + 10,
+              year: prevState.year + 3,
               history: [...prevState.history, `${buttonText}-${analysisText}`]
             };
             return newState;
