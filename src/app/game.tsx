@@ -66,19 +66,15 @@ export default function AlternateTides({ description }: { description: string })
   useEffect(() => {
     // const interval = setInterval(() => {
     const imageDescription = `
-    Generate a detailed and realistic image representing the state of Aboriginal culture and society in Australia during the year ${game.year}. 
-    Show the influence of European contact and the effects of the decisions made in the game. 
-    Highlight the unique aspects of Aboriginal art, architecture, and way of life. 
-    Depict the level of cultural preservation and the interactions between Aboriginal people and European settlers based on the game state: ${JSON.stringify(game)}, the game event: ${game.event}, and the selected action: ${game.selectedAction}.
-    
-    **Details to include:**
-    - **Setting and Environment:** Depict a realistic street view that combines Eora Nation elements and European influences appropriate to the year ${game.year}. Show native Australian flora such as eucalyptus trees, ferns, and banksias. Include any relevant natural or urban features based on the game state.
-    - **Buildings and Structures:** Illustrate the architecture of the period, incorporating traditional Aboriginal shelters like bark huts and woven domes alongside European-style buildings, which evolve over time. Highlight Aboriginal carvings, totems, and murals visible on the structures.
-    - **People and Activities:** Show Aboriginal people and European settlers engaging in activities appropriate to the game event. For example, if the event involves trade, depict exchanges of goods; if it involves conflict, show defensive preparations or skirmishes.
-    - **Interactions and Exchanges:** Focus on the central interactions between Aboriginal people and Europeans based on the selected action. Show gestures, body language, and communication methods such as interpreters or visual aids.
-    - **Cultural and Historical Context:** Highlight elements of Aboriginal art, architecture, and way of life, including clothing, tools, and community activities. Show the Europeans' influence, whether it is respectful exchange, assimilation, or conflict.
-    - **Atmosphere and Ambience:** Create a lively and dynamic scene with appropriate lighting and ambience. For example, warm, golden lighting for peaceful interactions, or tense, stark lighting for conflict situations. Include sounds and environmental details to enhance immersion.
-  `;
+    Generate a ray tracing real style rendering of the area is vibrant with Eora Nation culture. The scene should always has those traditional Aboriginal structures such as bark huts and woven domes.
+    Year of the scene: ${game.year} 
+    The action of people in this scene: ${game.selectedAction}  
+    The environment is lush with native Australian plants, reflecting the strong presence of Aboriginal culture.
+    Scene location: Besides certain streets of Sydney Harbour Australia
+    The event of the scene is: ${game.event}
+
+  
+    `;
     generateImage(imageDescription);
    
     (async () => {

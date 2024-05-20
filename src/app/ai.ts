@@ -63,10 +63,11 @@ export async function getGroqCompletion(
 // https://fal.ai/models/fast-turbo-diffusion-turbo/api
 // https://fal.run/fal-ai/lora
 // https://fal.run/fal-ai/fast-turbo-diffusion
+// https://fal.run/fal-ai/fast-sdxl
 
 export async function generateImageFal(prompt: string) {
   try {
-    const response = await fetch(`https://fal.run/fal-ai/lora`, {
+    const response = await fetch(`https://fal.run/fal-ai/fast-turbo-diffusion`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,11 +75,11 @@ export async function generateImageFal(prompt: string) {
         Authorization: `Key ${fal_key}`,
       },
       body: JSON.stringify({
-        model_name: "SG161222/Realistic_Vision_V2.0",
+        // model_name: "SG161222/Realistic_Vision_V2.0",
         prompt: prompt,
-        seed: 0,
-        negative_prompt:
-          "worst quality, low quality, normal quality, easynegative, FastNegativeV2, old photo, realistic, peole, faces, realistic style, real, photography",
+        // seed: 0,
+        // negative_prompt:
+        //   "worst quality, low quality, normal quality, old photo, photography, face",
         image_size: "landscape_16_9",
       }),
     });
