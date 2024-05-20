@@ -16,7 +16,7 @@ type AuraModel =
 
 export default function TextToSpeech({
   text,
-  model = "aura-helios-en",
+  model = "aura-zeus-en",
   showControls,
   autoPlay,
 }: {

@@ -91,6 +91,11 @@ export default function AlternateTides({ description }: { description: string })
   useEffect(() => {
     setConclusionFetching(true)
 
+
+
+
+////if the year hits 1790, conclusion comes out, following part is for conclusion prompts
+
     if (game.year >= 1790 && !Boolean(gameDone)) {
 
       (async () => {
@@ -116,9 +121,6 @@ export default function AlternateTides({ description }: { description: string })
           5. The struggles or triumphs of the Aboriginal people in maintaining their identity
     
           Provide a thought-provoking analysis of the player's actions and their consequences, highlighting the key turning points and the lessons that can be learned from their journey. Conclude by reflecting on the enduring spirit of the Aboriginal people and the importance of understanding and compassion in shaping the future of Australia.
-    
-          Please respond in a single "conclusion" property containing the generated text. only show the content inside json {}, do not include curly brackets: {}. Do not include comments or any other text outside the JSON object.
-        
         `);
 
         setGame(prevState => {
@@ -182,14 +184,14 @@ export default function AlternateTides({ description }: { description: string })
   }, [game.actions]);
 
 
-////decisions prompts
+////Game prompts that including actions and variables states
 
 
   async function handleClick(buttonText: string) {
     console.log("Clicked");
     const analysisText = analysis[buttonText] || "";
 
-    const systemPrompt = `You are an AI assistant for the historical strategy game Alternate Tides: Australia's New Dawn. Players will experience Australian history from European colonists to modern times through this game. Your task is to interpret a JSON object containing the current game state, the player's suggested actions, and analysis of their consequences.
+    const systemPrompt = `You are an AI assistant for the historical strategy game Alternate Tides: Australia's New Dawn. Players will experience Australian history from European colonists to modern times through this game.Your task is to interpret a JSON object containing the current game state, the player's suggested actions, and analysis of their consequences.
     When updating the JSON object, consider in detail the impact of player choices on the year, cultural assimilation, reconciliation, current political challenges, war and conflict, and loss of identity challenges. You need to fine-tune these variables to truly reflect the immediate and long-term consequences of your choices.
     Ensure that four options are provided at each decision point. These options should be dynamic, diverse and challenging, and accurately reflect the cultural and historical context of the game setting. These choices will confront players with decisions about the moral dilemmas and practical impacts of colonization, such as land dispossession, cultural erosion, resistance movements, assimilation policies, and the fight for Aboriginal rights and recognition.
     When describing decisions, be specific about the expected impacts on key variables such as cultural assimilation, reconciliation, political challenges, conflicts, and identity issues. This will help players more fully understand the possible consequences of their choices.
@@ -232,7 +234,7 @@ export default function AlternateTides({ description }: { description: string })
         try {
           const updatedGameState = JSON.parse(gameState);
 
-          const eventPrompt = `Generate a complex game event for the historical strategy game Alternate Tides: Australia's New Dawn based on the current game state and the selected action. The event should be around 100 words and reflect the consequences of the player's choice, introducing new challenges or opportunities. Consider the impact on cultural assimilation, reconciliation, current political challenges, war and conflict, and loss of identity challenges.
+          const eventPrompt = `Generate a complex game event for the historical strategy game Alternate Tides: Australia's New Dawn based on the current game state and previous game event ${game.event}the selected action ${game.selectedAction} . The event should be around 100 words and reflect the consequences of the player's choice, introducing new challenges or opportunities.
        
           The current game state is:
           {
@@ -246,23 +248,9 @@ export default function AlternateTides({ description }: { description: string })
             "selectedAction": "${buttonText}-${analysisText}"
           }
 
-          Consider about the previous events:${game.history} and the knowledge of  ${aboriginalpdf}
+          Consider about the previous events:${game.history} and always refers to the knowledge of Aborginal law and their language from: ${aboriginalpdf}
 
-          Generate the game event as a string value for the "event" field. Format the response as follows:
-          {
-            "event": "string"
-          }
-         
-
-          Don't render in markdown, give the response as a json
-
-          Only output the JSON object with no other text or explanation. 
-
-          Output in JSON format,
-          Do not use markdown.
-
-          JSON:
-          
+          Do not provide actions. Generate the game event only.          
           `;
 
 
