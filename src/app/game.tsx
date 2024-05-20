@@ -12,6 +12,10 @@ const groq = new Groq({
   dangerouslyAllowBrowser: true,
 });
 
+
+
+////Initial Game States set up here
+
 export default function AlternateTides({ description }: { description: string }) {
   const defaultGameState = {
     year: 1770,
@@ -20,12 +24,12 @@ export default function AlternateTides({ description }: { description: string })
     currentPoliticalChallenges: "Colonizers face moral dilemmas",
     warAndConflict: "Potential for conflict looms",
     lossOfIdentityChallenges: "Aboriginal culture threatened by colonization",
-    event: "The year is 1770, and the continent of Australia is home to a thriving Aboriginal population with rich cultural traditions. As European explorers arrive on the shores, a pivotal moment in history emerges. The collision of two vastly different worlds sets the stage for a complex and often tragic narrative. The Aboriginal people face the threat of dispossession, disease, and cultural erosion, while the colonizers grapple with the moral dilemmas of their actions. As a key figure in this unfolding story, your decisions will shape the future of Australia and its people. Will you champion the cause of the Aboriginal people, fighting for their rights and preserving their heritage? Or will you prioritize the interests of the colonizers, seeking to establish a new society at any cost? The path you choose will have far-reaching consequences, echoing through generations. Brace yourself for a journey that will test your resolve, challenge your beliefs, and forever alter the course of history. Welcome to 'Alternate Tides: A New Dawn for Australia",
+    event: "Captain Cook and his crew arrive at Sydney Harbor aboard the HMS Endeavour. The Eora Nation people, adorned with intricate traditional body paint and carvings, watch warily from the shore. The Europeans, dressed in their pristine naval uniforms, unload gifts including tools, food, and fabrics. They set up a temporary encampment with tents and cooking fires. The Eora people, engaging in daily activities like fishing, cooking, and crafting tools, eye the newcomers with a mix of curiosity and suspicion. Children play near the shore, while warriors stand ready, prepared for any threat. In a central area, Cook presents an array of gifts to Eora leaders, who examine them cautiously, discussing their potential uses and implications. Friendly gestures and respectful bows are exchanged, but tension is palpable. Some Europeans document the local flora and fauna, fascinated yet uncertain. The Eora people’s reaction is mixed, some intrigued by the strange tools, others wary of the Europeans’ intentions. The atmosphere is charged, the future of this encounter hanging in the balance.",
     actions: [
-      "Relocate the native population so that they move to designated sites and confiscate the land.",
-      "Prioritize the expansion of economic and resource development in colonies to accelerate regional growth.",
-      "Implement assimilation policies to help integrate First Nations into the fabric of modern European society",
-      "Enact laws to protect Aboriginal cultural sites and sacred places and support cultural heritage."
+      "Captain Cook and his crew present an array of gifts, including tools, food, and fabrics, as a gesture of goodwill.",
+      "The Europeans formally request permission from the Eora leaders to use a portion of the land for their encampment and scientific activities.",
+      "The Europeans use weapons to intimidate the Eora people, attempting to force them to leave the area and secure the land for themselves.",
+      "The Europeans choose to stay on their ship, observing the Eora people and waiting for a clear sign or permission to use the land."
     ],
     selectedAction: "",
     history: [],
@@ -54,10 +58,27 @@ export default function AlternateTides({ description }: { description: string })
       setFetching(false);
     }
   };
+
+
+
+  ///So here is the Image Prompts, prompts for consistant style of visualization
   
   useEffect(() => {
     // const interval = setInterval(() => {
-    const imageDescription = `Generate an image that represents the state of Aboriginal culture and society in Australia during the year ${game.year}. Show the influence of European contact and the effects of the decisions made in the game. Highlight the unique aspects of Aboriginal art, architecture, and way of life. Depict the level of cultural preservation and the interactions between Aboriginal people and European settlers based on the game state: ${JSON.stringify(game)}, the game event: ${game.event}, and the selected action: ${game.selectedAction}.`;
+    const imageDescription = `
+    Generate a detailed and realistic image representing the state of Aboriginal culture and society in Australia during the year ${game.year}. 
+    Show the influence of European contact and the effects of the decisions made in the game. 
+    Highlight the unique aspects of Aboriginal art, architecture, and way of life. 
+    Depict the level of cultural preservation and the interactions between Aboriginal people and European settlers based on the game state: ${JSON.stringify(game)}, the game event: ${game.event}, and the selected action: ${game.selectedAction}.
+    
+    **Details to include:**
+    - **Setting and Environment:** Depict a realistic street view that combines Eora Nation elements and European influences appropriate to the year ${game.year}. Show native Australian flora such as eucalyptus trees, ferns, and banksias. Include any relevant natural or urban features based on the game state.
+    - **Buildings and Structures:** Illustrate the architecture of the period, incorporating traditional Aboriginal shelters like bark huts and woven domes alongside European-style buildings, which evolve over time. Highlight Aboriginal carvings, totems, and murals visible on the structures.
+    - **People and Activities:** Show Aboriginal people and European settlers engaging in activities appropriate to the game event. For example, if the event involves trade, depict exchanges of goods; if it involves conflict, show defensive preparations or skirmishes.
+    - **Interactions and Exchanges:** Focus on the central interactions between Aboriginal people and Europeans based on the selected action. Show gestures, body language, and communication methods such as interpreters or visual aids.
+    - **Cultural and Historical Context:** Highlight elements of Aboriginal art, architecture, and way of life, including clothing, tools, and community activities. Show the Europeans' influence, whether it is respectful exchange, assimilation, or conflict.
+    - **Atmosphere and Ambience:** Create a lively and dynamic scene with appropriate lighting and ambience. For example, warm, golden lighting for peaceful interactions, or tense, stark lighting for conflict situations. Include sounds and environmental details to enhance immersion.
+  `;
     generateImage(imageDescription);
    
     (async () => {
@@ -100,8 +121,7 @@ export default function AlternateTides({ description }: { description: string })
     
           Provide a thought-provoking analysis of the player's actions and their consequences, highlighting the key turning points and the lessons that can be learned from their journey. Conclude by reflecting on the enduring spirit of the Aboriginal people and the importance of understanding and compassion in shaping the future of Australia.
     
-          Please respond in a JSON format with a single "conclusion" property containing the generated text. Do not use markdown formatting.
-        
+          Please respond in a single "conclusion" property containing the generated text. only show the content inside json {}, do not include curly brackets: {}. Do not include comments or any other text outside the JSON object.
         
         `);
 
@@ -165,6 +185,10 @@ export default function AlternateTides({ description }: { description: string })
     generateAnalysis();
   }, [game.actions]);
 
+
+////decisions prompts
+
+
   async function handleClick(buttonText: string) {
     console.log("Clicked");
     const analysisText = analysis[buttonText] || "";
@@ -213,7 +237,7 @@ export default function AlternateTides({ description }: { description: string })
           const updatedGameState = JSON.parse(gameState);
 
           const eventPrompt = `Generate a complex game event for the historical strategy game Alternate Tides: Australia's New Dawn based on the current game state and the selected action. The event should be around 100 words and reflect the consequences of the player's choice, introducing new challenges or opportunities. Consider the impact on cultural assimilation, reconciliation, current political challenges, war and conflict, and loss of identity challenges.
-
+       
           The current game state is:
           {
             "year": ${updatedGameState.year},
@@ -226,11 +250,13 @@ export default function AlternateTides({ description }: { description: string })
             "selectedAction": "${buttonText}-${analysisText}"
           }
 
+          Consider about the previous events:${game.history} and the knowledge of  ${aboriginalpdf}
+
           Generate the game event as a string value for the "event" field. Format the response as follows:
           {
             "event": "string"
           }
-          ${aboriginalpdf}
+         
 
           Don't render in markdown, give the response as a json
 
@@ -251,7 +277,7 @@ export default function AlternateTides({ description }: { description: string })
             const newState = {
               ...prevState,
               ...updatedGameState,
-              event: JSON.parse(testGemini)?.event,
+              event: testGemini,
               actions: updatedGameState.actions || [],
               selectedAction: `${buttonText}-${analysisText}`,
               year: prevState.year + 3,

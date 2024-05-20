@@ -10,7 +10,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI ?? "");
 
 export async function getGeminiVision(prompt: string, base64Image: string) {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
   const formatted = base64Image.split(",")[1];
   const image = {
     inlineData: {
@@ -62,10 +62,11 @@ export async function getGroqCompletion(
 // This function makes a request to the FAL api and gets an image.
 // https://fal.ai/models/fast-turbo-diffusion-turbo/api
 // https://fal.run/fal-ai/lora
+// https://fal.run/fal-ai/fast-turbo-diffusion
 
 export async function generateImageFal(prompt: string) {
   try {
-    const response = await fetch(`https://fal.run/fal-ai/fast-turbo-diffusion`, {
+    const response = await fetch(`https://fal.run/fal-ai/lora`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +74,7 @@ export async function generateImageFal(prompt: string) {
         Authorization: `Key ${fal_key}`,
       },
       body: JSON.stringify({
-        // model_name: "SG161222/Realistic_Vision_V2.0",
+        model_name: "SG161222/Realistic_Vision_V2.0",
         prompt: prompt,
         seed: 0,
         negative_prompt:
