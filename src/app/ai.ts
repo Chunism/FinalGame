@@ -99,6 +99,7 @@ export async function generateImageFal(prompt: string) {
 
 export async function generateImageFalSVD(prompt: string, url: string) {
   try {
+
     const response = await fetch(`https://fal.run/fal-ai/fast-svd`, {
       method: "POST",
       headers: {
@@ -117,7 +118,6 @@ export async function generateImageFalSVD(prompt: string, url: string) {
         }
       ),
     });
-
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message}`);

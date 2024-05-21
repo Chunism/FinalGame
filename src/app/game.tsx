@@ -6,6 +6,7 @@ import { generateImageFal, generateImageFalSVD, getGeminiText } from "./ai";
 import { aboriginalpdf } from "../data";
 import { generateVoice, speechToText } from "@/ai/fal";
 import TextToSpeech from "./texttospeech";
+// import Video from "./video";
 
 const groq = new Groq({
   apiKey: "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",
@@ -44,7 +45,7 @@ export default function AlternateTides({ description }: { description: string })
   const [analysis, setAnalysis] = useState<{ [key: string]: string }>({});
   const [gameDone, setGameDone] = useState(false);
   const [videosFalUrl, setVideoFalUrl] = useState();
-  const [speech, setSpeech] = useState(); 
+  const [speech, setSpeech] = useState();
 
   const generateImage = async (imageDescription: string) => {
     setFetching(true);
@@ -52,7 +53,16 @@ export default function AlternateTides({ description }: { description: string })
       const response = await generateImageFal(imageDescription);
       const imageUrl = response;
       setImg(imageUrl);
+
+
+      console.log("CAlling HERE2",);
+      // const video = await generateImageFalSVD(imageDescription, imageUrl)
+      console.log("VIDEO", video)
+      setVideoFalUrl(video?.url)
+
+
       setFetching(false);
+
     } catch (error) {
       console.error("Error generating image:", error);
       setFetching(false);
@@ -62,7 +72,7 @@ export default function AlternateTides({ description }: { description: string })
 
 
   ///So here is the Image Prompts, prompts for consistant style of visualization
-  
+
   useEffect(() => {
     // const interval = setInterval(() => {
     const imageDescription = `
@@ -71,16 +81,13 @@ export default function AlternateTides({ description }: { description: string })
     The action of people in this scene: ${game.selectedAction}  
     The environment is lush with native Australian plants, reflecting the strong presence of Aboriginal culture.
     Scene location: Besides certain streets of Sydney Harbour Australia
-    The event of the scene is: ${game.event}
-
+    The event of the scene is: ${game.event} 
   
     `;
-    generateImage(imageDescription);
-   
+
     (async () => {
-        const video =  await generateImageFalSVD(imageDescription, img)
-        console.log(video)
-        setVideoFalUrl(video?.url)
+      await generateImage(imageDescription);
+      console.log("DEscription", imageDescription);
     })()
 
     // }, 8000);
@@ -94,7 +101,7 @@ export default function AlternateTides({ description }: { description: string })
 
 
 
-////if the year hits 1790, conclusion comes out, following part is for conclusion prompts
+    ////if the year hits 1790, conclusion comes out, following part is for conclusion prompts
 
     if (game.year >= 1790 && !Boolean(gameDone)) {
 
@@ -138,7 +145,7 @@ export default function AlternateTides({ description }: { description: string })
 
     setConclusionFetching(false);
 
-  }, [game])
+  }, [game.actions])
 
 
   useEffect(() => {
@@ -151,7 +158,7 @@ export default function AlternateTides({ description }: { description: string })
 
         while (retries < MAX_RETRIES) {
           try {
-            analysisResponse = await ai(analysisPrompt, 512, "", "llama3-8b-8192");
+            analysisResponse = await ai(analysisPrompt, 512, "", "mixtral-8x7b-32768");
             break;
           } catch (error) {
             console.error(`Error generating analysis for action "${action}":`, error);
@@ -184,7 +191,7 @@ export default function AlternateTides({ description }: { description: string })
   }, [game.actions]);
 
 
-////Game prompts that including actions and variables states
+  ////Game prompts that including actions and variables states
 
 
   async function handleClick(buttonText: string) {
@@ -305,17 +312,16 @@ export default function AlternateTides({ description }: { description: string })
   }
 
 
-
   return (
     <div className="background w-[999px] mx-auto">
 
-    {/* <audio
+      {/* <audio
       src="https://soundcloud.com/didgeridooaboriginaldreamtime/sets/didgeridoo-with-nature-sounds?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
       autoPlay={true}
       loop={true}
     /> */}
 
-    
+
       <div className="title">WORLD ENGINE</div>
       <div className="navbar">
         <div>Year: {game.year}</div>
@@ -329,16 +335,13 @@ export default function AlternateTides({ description }: { description: string })
 
       {
         game.year >= 1790 ? <>   <p>
-          
+
           {(img && !videosFalUrl) && <img className="HeroImage" src={img} alt="Generated Image" />}
 
-{videosFalUrl && (<>
-  <video className="HeroImage" width="960" height="640" autoPlay loop>
-    <source src={videosFalUrl} type="video/mp4"/>
-        Your browser does not support the video tag.
-        </video>
-        <div className="empty_space">
-              </div>
+          {videosFalUrl && (<>
+            <Video videosFalUrl={videosFalUrl}/>
+            <div className="empty_space">
+            </div>
             <div className="conclusion-title">Welcome to the New World...</div>
             <div className="conclusion-content">
               <p>
@@ -351,37 +354,37 @@ export default function AlternateTides({ description }: { description: string })
                 The political landscape has been shaped by {game.currentPoliticalChallenges}, leading to {game.warAndConflict === "Avoided" ? "peace and stability" : "conflict and turmoil"}. The Aboriginal people have {game.lossOfIdentityChallenges === "Overcome" ? "maintained their cultural identity" : "struggled to preserve their heritage"}.
               </p>
               <p>
-                {conclusionFetching && <p className="ferchingc">Generating game conclusion. please wait for awhile</p>} 
+                {conclusionFetching && <p className="ferchingc">Generating game conclusion. please wait for awhile</p>}
                 {game.conclusion}
               </p>
             </div>
 
 
-      <div className="conclusion-reflection">
-                <p>Reflect upon the world you have shaped:</p>
-                  <p>How have your choices influenced the lives of the Aboriginal people?</p>
-                  <p>What lessons can be learned from the path you have taken?</p>
-                  <p>How will the new world you have created continue to evolve?</p> 
-              </div>
+            <div className="conclusion-reflection">
+              <p>Reflect upon the world you have shaped:</p>
+              <p>How have your choices influenced the lives of the Aboriginal people?</p>
+              <p>What lessons can be learned from the path you have taken?</p>
+              <p>How will the new world you have created continue to evolve?</p>
+            </div>
 
 
 
-      <div className="conclusion-message">
-                <p>
-                  Remember, the world you have created is a testament to the power of your decisions. The legacy of your choices will echo through the generations, shaping the future of Australia and its people.
-                </p>
-                <p>
-                  Thank you for experiencing Alternate Tides: A New Dawn for Australia. May the world you have brought into being serve as a reminder of the importance of understanding, compassion, and the enduring spirit of the Aboriginal people.
-                </p>
-      </div>
-      
+            <div className="conclusion-message">
+              <p>
+                Remember, the world you have created is a testament to the power of your decisions. The legacy of your choices will echo through the generations, shaping the future of Australia and its people.
+              </p>
+              <p>
+                Thank you for experiencing Alternate Tides: A New Dawn for Australia. May the world you have brought into being serve as a reminder of the importance of understanding, compassion, and the enduring spirit of the Aboriginal people.
+              </p>
+            </div>
 
 
 
-    </>)}
-          
-          
-          </p></> : (
+
+          </>)}
+
+
+        </p></> : (
           <>
             <div>{game.event}</div>
             <div className="row hero">
@@ -391,41 +394,41 @@ export default function AlternateTides({ description }: { description: string })
 
               {videosFalUrl && (<>
                 <video className="HeroImage" width="960" height="640" autoPlay loop>
-                  <source src={videosFalUrl} type="video/mp4"/>
-                      Your browser does not support the video tag.
-                    </video>
+                  <source src={videosFalUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
 
-                  </>)}
-                </div>
-
-                {game.actions.map((action, index) => (
-                  <div key={index}>
-                    <button onClick={() => handleClick(action.toString())}>
-                      {action}
-                    </button>
-                    <div>{analysis[action.toString()] || 'Loading analysis...'}</div>
-                  </div>
-                ))}</>
-              )
-              }
-
-
-
-              <div className="empty_space">
-              </div>
-              <footer className="footer">
-                <div className="footer-content">
-                  <p>&copy; {new Date().getFullYear()} Alternate Tides. ALL RIGHTS RESERVED.</p>
-                  <nav className="footer-nav">
-                    <div>WORLD ENGINE STUDIO</div>
-                    <div>CHUN HO LAU, YUSHAN WANG, TIMOTHY JINZHI NG</div>
-                    <div>RMIT ARCHITECTURE</div>
-                  </nav>
-                </div>
-              </footer>
-
-      {game.event && <TextToSpeech text={game.event} showControls autoPlay/>}
-
+              </>)}
             </div>
-            );
+
+            {game.actions.map((action, index) => (
+              <div key={index}>
+                <button onClick={() => handleClick(action.toString())}>
+                  {action}
+                </button>
+                <div>{analysis[action.toString()] || 'Loading analysis...'}</div>
+              </div>
+            ))}</>
+        )
+      }
+
+
+
+      <div className="empty_space">
+      </div>
+      <footer className="footer">
+        <div className="footer-content">
+          <p>&copy; {new Date().getFullYear()} Alternate Tides. ALL RIGHTS RESERVED.</p>
+          <nav className="footer-nav">
+            <div>WORLD ENGINE STUDIO</div>
+            <div>CHUN HO LAU, YUSHAN WANG, TIMOTHY JINZHI NG</div>
+            <div>RMIT ARCHITECTURE</div>
+          </nav>
+        </div>
+      </footer>
+
+      {game.event && <TextToSpeech text={game.event} showControls autoPlay />}
+
+    </div>
+  );
 }

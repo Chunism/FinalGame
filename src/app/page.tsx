@@ -8,10 +8,6 @@ const prompt =  "Generate a description for agame based on aboriginal"
 
 export default async function Home() {
 
-
-
-
-
   return (
     <main className="main">
       <Game description={""}/>                        
